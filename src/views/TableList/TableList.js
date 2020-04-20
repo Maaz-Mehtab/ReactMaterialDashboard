@@ -8,7 +8,7 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-
+import DataTable from 'components/DataTables/DataTable';
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {

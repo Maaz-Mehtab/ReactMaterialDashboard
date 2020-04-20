@@ -19,7 +19,7 @@ import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo1.png";
 
 let ps;
-
+var sidebarRoutes = routes.filter(a => a.sidebar == true)
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
@@ -95,7 +95,7 @@ export default function Admin({ ...rest }) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
+        routes={sidebarRoutes}
         logoText={"Health Mark"}
         logo={logo}
         image={image}
@@ -104,7 +104,7 @@ export default function Admin({ ...rest }) {
         color={color}
         {...rest}
       />
-      <div className={classes.mainPanel}  ref={mainPanel}>
+      <div className={classes.mainPanel} ref={mainPanel}>
         <Navbar
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
@@ -116,8 +116,8 @@ export default function Admin({ ...rest }) {
             <div className={classes.container}>{switchRoutes}</div>
           </div>
         ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
+            <div className={classes.map}>{switchRoutes}</div>
+          )}
         {getRoute() ? <Footer /> : null}
         {/* <FixedPlugin
           handleImageClick={handleImageClick}
