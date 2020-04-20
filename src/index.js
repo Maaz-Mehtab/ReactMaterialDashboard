@@ -25,6 +25,7 @@ import Admin from "layouts/Admin.js";
 import RTL from "layouts/RTL.js";
 import Login from './views/Auth/Login';
 import Signup from './views/Auth/Signup';
+import AddCustomer from './views/Customer/AddCustomer';
 
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 
@@ -37,6 +38,7 @@ ReactDOM.render(
       <Route path="/rtl" component={RTL} />
       <Route path="/Login" component={Login} />
       <Route path="/Signup" component={Signup} />
+      {/* <Route path="/AddCustomer" component={AddCustomer} /> */}
       
       <Redirect from="/" to="/admin/dashboard" />
       {/* <Redirect from="/" to="/Login" /> */}

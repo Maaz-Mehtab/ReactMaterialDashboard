@@ -168,10 +168,6 @@ export default function Signup() {
               <MenuItem value={2}>Client</MenuItem>
               <MenuItem value={3}>Marketing</MenuItem>
             </TextField>
-
-
-
-
             <Button
               type="submit"
               fullWidth
