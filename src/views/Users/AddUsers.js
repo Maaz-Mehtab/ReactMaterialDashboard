@@ -8,7 +8,30 @@ import Button from "components/CustomButtons/Button.js";
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import CssTextField from 'components/CssTextField/CssTextField.js';
-
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';  
+const CustomDropDown = withStyles({
+    root: {
+        '& label.Mui-focused': {
+            color: 'purple',
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: 'purple',
+        },
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                borderColor: '#d2d2d2',
+            },
+            '&:hover fieldset': {
+                borderColor: 'purple',
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: 'purple',
+            },
+        },
+     },
+})(TextField);
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
@@ -40,15 +63,18 @@ const useStyles = makeStyles((theme) => ({
             lineHeight: "1"
         }
     },
+    input1:{
+        height:10,
+        
+    }
 }));
-export default function AddUsers() {
+export default function AddUsers(props) {
     const classes = useStyles();
-    const [role, setRole] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [name, setName] = React.useState('');
+    const [status, setStatus] = React.useState(false);
     const handleChange = (event) => {
-        console.log("event", event.target.name);
-        let state = event.target.name;
+         let state = event.target.name;
         if (state == "email") {
             setEmail(event.target.value);
         }
@@ -57,7 +83,14 @@ export default function AddUsers() {
         }
 
     };
-
+    const  DropDownChange = (event) => {
+        console.log("event", event);
+        setStatus(event.target.value);
+        
+    }
+    const AddUpdateUser= ()=>{
+        console.log("AddUpdateUser");
+    }
     return (
         <GridContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
             <GridItem xs={12} sm={12} md={12}>
@@ -86,10 +119,26 @@ export default function AddUsers() {
                                     value={name}
                                     onChange={handleChange}
                                     id="name"
-                                    label="name"
+                                    label="Name"
                                     name="name"
 
                                 />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} >
+                            <CustomDropDown
+                                    fullWidth
+                                     select
+                                    margin="normal"
+                                    label="Select"
+                                    value={status}
+                                    InputProps={{ classes: { input: classes.input1 } }}
+                                    onChange={DropDownChange}
+                                    variant="outlined"
+                                    >
+                                    <MenuItem value={true}>Varified</MenuItem>
+                                    <MenuItem value={false}>Not Varifeid</MenuItem>
+
+                                </CustomDropDown>
                             </Grid>
 
                         </Grid>
@@ -102,6 +151,7 @@ export default function AddUsers() {
                                     fullWidth
                                     variant="contained"
                                     color="primary"
+                                    onClick={AddUpdateUser}
                                     className={classes.submit}
                                 >
                                     Add/Edit
@@ -113,6 +163,7 @@ export default function AddUsers() {
                                     fullWidth
                                     variant="contained"
                                     color="primary"
+                                    onClick={()=>props.history.goBack()}
                                     className={classes.submit}
                                 >
                                     Cancel

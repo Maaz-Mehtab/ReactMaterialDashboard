@@ -66,7 +66,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: true,
             },
             {
                 id: 2,
@@ -74,7 +74,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: false,
 
             },
             {
@@ -83,7 +83,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: true,
 
             },
             {
@@ -92,7 +92,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: false,
 
             },
             {
@@ -101,7 +101,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: true,
             },
             {
                 id: 6,
@@ -109,7 +109,7 @@ class Users extends React.Component {
                 email: 'maaz@gmail.com',
                 country: "Pakistan",
                 role: "Admin",
-                status: "Verify",
+                status: true,
 
             },
         ];
@@ -118,7 +118,10 @@ class Users extends React.Component {
             { title: 'Email', field: 'email' },
             { title: 'Country', field: 'country' },
             { title: 'Role', field: 'role' },
-            { title: 'Status', field: 'status', },
+            {
+                title: 'Status', field: 'status',
+                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.status) ? "#155724" : "#721c24", backgroundColor: (row.status) ? "#d4edda" : "#f8d7da" }}> {row.status == true ? "Varified" : "Not Varified"}</span>
+            },
         ]
     }
 
@@ -200,7 +203,7 @@ class Users extends React.Component {
                                         icon: 'add',
                                         tooltip: 'Add User',
                                         isFreeAction: true,
-                                        onClick: (event) =>  this.props.history.push('/admin/AddUsers')
+                                        onClick: (event) => this.props.history.push('/admin/AddUsers')
                                     }
                                 ]}
                                 editable={{
@@ -295,7 +298,6 @@ class Users extends React.Component {
                                 >
                                     <MenuItem value={0}>Varified</MenuItem>
                                     <MenuItem value={1}>Not Varifeid</MenuItem>
-
                                 </TextField>
                             </div>
                             <GridItem
