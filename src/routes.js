@@ -39,6 +39,7 @@ import Inventory from "views/Inventory/Inventory.js";
 import Customer from "views/Customer/Customer.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 import AddCustomer from './views/Customer/AddCustomer';
+import AddUsers from './views/Users/AddUsers';
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
 
@@ -91,6 +92,14 @@ const dashboardRoutes = [
     name: "AddCustomer",
     icon: Notifications,
     component: AddCustomer,
+    layout: "/admin",
+    sidebar:false
+  },
+  {
+    path: "/AddUsers",
+    name: "AddUsers",
+    icon: Notifications,
+    component: AddUsers,
     layout: "/admin",
     sidebar:false
   },

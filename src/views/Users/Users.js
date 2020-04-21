@@ -200,21 +200,10 @@ class Users extends React.Component {
                                         icon: 'add',
                                         tooltip: 'Add User',
                                         isFreeAction: true,
-                                        onClick: (event) => this.ToggleModal()
+                                        onClick: (event) =>  this.props.history.push('/admin/AddUsers')
                                     }
                                 ]}
                                 editable={{
-                                    //   onRowAdd: newData =>
-                                    //     new Promise((resolve, reject) => {
-                                    //       setTimeout(() => {
-                                    //         {
-                                    //           const data = this.state.data;
-                                    //           data.push(newData);
-                                    //           this.setState({ data }, () => resolve());
-                                    //         }
-                                    //         resolve()
-                                    //       }, 1000)
-                                    //     }),
                                     onRowUpdate: (newData, oldData) =>
                                         new Promise((resolve, reject) => {
                                             setTimeout(() => {
