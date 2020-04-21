@@ -177,7 +177,7 @@ class Users extends React.Component {
                             <h4 className={styles.cardTitleWhite}>Users</h4>
                             <p className={styles.cardCategoryWhite}>
                                 All User's List
-            </p>
+                             </p>
                         </CardHeader>
                         <CardBody>
                             <MaterialTable

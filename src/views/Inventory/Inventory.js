@@ -61,7 +61,7 @@ class Inventory extends React.Component {
         }
         this.state.data = [
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -70,7 +70,7 @@ class Inventory extends React.Component {
 
             },
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -79,7 +79,7 @@ class Inventory extends React.Component {
 
             },
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -88,7 +88,7 @@ class Inventory extends React.Component {
 
             },
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -97,7 +97,7 @@ class Inventory extends React.Component {
 
             },
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -106,7 +106,7 @@ class Inventory extends React.Component {
 
             },
             {
-              
+
                 productName: 'CangoVirus',
                 productRetailPrice: 'maaz@10000.com',
                 productInternalPrice: "9500",
@@ -124,6 +124,7 @@ class Inventory extends React.Component {
         ]
     }
 
+
     pageChange = (e) => {
         try {
             console.log('e pageChange', e);
@@ -140,25 +141,6 @@ class Inventory extends React.Component {
             console.log("rowperChange Exception", e)
         }
     }
-
-    ToggleModal = () => {
-        this.setState({
-            modalopen: !this.state.modalopen
-        })
-    };
-
-    handleClose = () => {
-        this.setState({
-            modalopen: false
-        })
-    };
-
-    backdrop = () => {
-        console.log("11111")
-    }
-
-
-
     DropDownChange = (event) => {
         console.log("event", event);
         this.setState({
@@ -176,7 +158,7 @@ class Inventory extends React.Component {
                             <h4 className={styles.cardTitleWhite}>Inventory</h4>
                             <p className={styles.cardCategoryWhite}>
                                 All Inventory's List
-            </p>
+                             </p>
                         </CardHeader>
                         <CardBody>
                             <MaterialTable
@@ -196,26 +178,15 @@ class Inventory extends React.Component {
                                         }
                                     }
                                 }}
-                                // actions={[
-                                //     {
-                                //         icon: 'add',
-                                //         tooltip: 'Add User',
-                                //         isFreeAction: true,
-                                //         onClick: (event) => this.ToggleModal()
-                                //     }
-                                // ]}
+                               actions={[
+                                    {
+                                        icon: 'add',
+                                        tooltip: 'Add User',
+                                        isFreeAction: true,
+                                        onClick: (event) => this.props.history.push('/admin/AddInventory')
+                                    }
+                                ]}
                                 editable={{
-                                      onRowAdd: newData =>
-                                        new Promise((resolve, reject) => {
-                                          setTimeout(() => {
-                                            {
-                                              const data = this.state.data;
-                                              data.push(newData);
-                                              this.setState({ data }, () => resolve());
-                                            }
-                                            resolve()
-                                          }, 1000)
-                                        }),
                                     onRowUpdate: (newData, oldData) =>
                                         new Promise((resolve, reject) => {
                                             setTimeout(() => {
@@ -246,89 +217,6 @@ class Inventory extends React.Component {
                         </CardBody>
                     </Card>
                 </GridItem>
-
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={this.state.modalopen}
-                    className={classes.modal}
-                    onClose={() => this.handleClose()}
-                    closeAfterTransition
-                >
-
-                    <GridItem xs={8} sm={8} md={4}>
-                        <div style={{ background: "purple", width: '100%', paddingTop: 15, paddingBottom: 15 }}>
-                            <span style={{ color: "#fff", textAlign: 'left', paddingLeft: 10, }}>Add/Edit Users</span>
-                        </div>
-                        <div className={classes.paper}>
-                            <div>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    InputProps={{ classes: { input: classes.input1 } }}
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                    size="small"
-                                    autoFocus
-                                />
-                            </div>
-
-                            <div>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    InputProps={{ classes: { input: classes.input1 } }}
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                    size="small"
-                                    autoFocus
-                                />
-                            </div>
-
-                            <div className={styles.DropDownDiv}>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-select-currency"
-                                    select
-                                    label="Select"
-                                    value={this.state.isVarified}
-                                    InputProps={{ classes: { input: classes.input1 } }}
-                                    onChange={(e) => this.DropDownChange(e)}
-                                    variant="outlined"
-                                    size="small"
-                                >
-                                    <MenuItem value={0}>Varified</MenuItem>
-                                    <MenuItem value={1}>Not Varifeid</MenuItem>
-
-                                </TextField>
-                            </div>
-                            <GridItem
-                                container
-                                spacing={0}
-                                direction="row"
-                                alignItems="end"
-                                justify="center"
-
-                            >
-                                <Button variant="outlined" size="medium" className={classes.submit}>
-                                    Edit
-                             </Button>
-                                <Button variant="outlined" size="medium" className={classes.submit}>
-                                    Cancel
-                             </Button>
-                            </GridItem>
-                        </div>
-                    </GridItem>
-
-                </Modal>
             </GridContainer>
         )
     }

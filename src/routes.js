@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Material Dashboard React - v1.8.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-// @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
@@ -37,11 +19,9 @@ import DataTable from "views/DataTables/DataTable.js";
 import Users from "views/Users/Users.js";
 import Inventory from "views/Inventory/Inventory.js";
 import Customer from "views/Customer/Customer.js";
-import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 import AddCustomer from './views/Customer/AddCustomer';
 import AddUsers from './views/Users/AddUsers';
-// core components/views for RTL layout
-import RTLPage from "views/RTLPage/RTLPage.js";
+import AddInventory from './views/Inventory/AddInventory';
 
 const dashboardRoutes = [
   {
@@ -100,6 +80,14 @@ const dashboardRoutes = [
     name: "AddUsers",
     icon: Notifications,
     component: AddUsers,
+    layout: "/admin",
+    sidebar:false
+  },
+  {
+    path: "/AddInventory",
+    name: "Add/Edit Inventory",
+    icon: Notifications,
+    component: AddInventory,
     layout: "/admin",
     sidebar:false
   },

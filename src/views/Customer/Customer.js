@@ -170,6 +170,7 @@ class Customer extends React.Component {
         console.log("11111")
     }
     AddCustomer = () => {
+        console.log("addCustomer",this.props);
         this.props.history.push('/admin/AddCustomer')
        
     }
