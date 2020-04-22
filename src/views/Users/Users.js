@@ -62,65 +62,24 @@ class Users extends React.Component {
             modalopen: false,
             limit: 10,
             page: 0,
-            allUsers: []
+            allUsers: [],
+            totalRecords: 0
         }
         let route = window.location.pathname
         util.usersExist(route, this.props)
-        this.state.data = [
-            {
-                id: 1,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: true,
-            },
-            {
-                id: 2,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: false,
+        this.bindFunctions()
+    }
 
-            },
-            {
-                id: 3,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: true,
+    bindFunctions() {
+        this.makeColumns = this.makeColumns.bind(this)
+    }
 
-            },
-            {
-                id: 4,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: false,
+    componentDidMount() {
+        this.makeColumns()
+    }
 
-            },
-            {
-                id: 5,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: true,
-            },
-            {
-                id: 6,
-                name: 'Maaz',
-                email: 'maaz@gmail.com',
-                country: "Pakistan",
-                role: "Admin",
-                status: true,
-
-            },
-        ];
-        this.state.columns = [
+    makeColumns() {
+        let columns = [
             { title: 'Name', field: 'name' },
             { title: 'Email', field: 'email' },
             { title: 'Country', field: 'country' },
@@ -130,37 +89,13 @@ class Users extends React.Component {
             },
             {
                 title: 'Status', field: 'status',
-                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.status) ? "#155724" : "#721c24", backgroundColor: (row.status) ? "#d4edda" : "#f8d7da" }}> {row.status == true ? "Varified" : "Not Varified"}</span>
+                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.status) ? "#155724" : "#721c24", backgroundColor: (row.status) ? "#d4edda" : "#f8d7da" }}> {row.status == true ? "Verified" : "Not Verified"}</span>
             },
         ]
-        this.fetchUsers = this.fetchUsers.bind(this)
 
-    }
-
-    componentDidMount() {
-        this.fetchUsers()
-    }
-
-    fetchUsers = async () => {
-        let {
-            page,
-            limit
-        } = this.state
-
-        let params = {
-            page,
-            limit
-        }
-        userService.getAllUsers(params)
-            .then(res => {
-                let { data, code, message } = res.data
-                if (code == 200) {
-                    this.setState({
-                        allUsers: data
-                    })
-                }
-            })
-            .catch(err => console.log(err))
+        this.setState({
+            columns
+        })
     }
 
     pageChange = (e) => {
@@ -205,9 +140,21 @@ class Users extends React.Component {
         })
     }
 
+    fetchUsers = (query) => {
+        let { limit } = this.state
+        let params = {
+            page: query.page,
+            limit: limit
+        }
+        if (query.search) {
+            params.search = query.search
+        }
+        return userService.getAllUsers(params)
+    }
+
     render() {
         const { classes } = this.props;
-        const { allUsers, columns } = this.state;
+        const { allUsers, columns, totalRecords, page, limit } = this.state;
         return (
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
@@ -221,10 +168,22 @@ class Users extends React.Component {
                         <CardBody>
                             <MaterialTable
                                 title=""
-                                data={allUsers}
+                                data={query => new Promise(async (resolve, reject) => {
+                                    let res = await this.fetchUsers(query)
+                                    let { data, totalRecords } = res.data
+                                    resolve({
+                                        data: data,
+                                        page: query.page,
+                                        totalCount: totalRecords
+                                    })
+                                })}
                                 columns={columns}
                                 onChangePage={(e) => this.pageChange(e)}
                                 onChangeRowsPerPage={(e) => this.rowperChange(e)}
+                                options={{
+                                    pageSize: 10,
+                                    actionsColumnIndex: -1
+                                }}
                                 localization={{
                                     pagination: {
                                         labelDisplayedRows: '{from}-{to} of {count}'
@@ -237,14 +196,7 @@ class Users extends React.Component {
                                     }
                                 }}
                                 // parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-                                actions={[
-                                    {
-                                        icon: 'add',
-                                        tooltip: 'Add User',
-                                        isFreeAction: true,
-                                        onClick: (event) => this.props.history.push('/admin/AddUsers')
-                                    }
-                                ]}
+                                
                                 editable={{
                                     onRowUpdate: (newData, oldData) =>
                                         new Promise((resolve, reject) => {
@@ -258,18 +210,18 @@ class Users extends React.Component {
                                                 resolve()
                                             }, 1000)
                                         }),
-                                    onRowDelete: oldData =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    let data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data.splice(index, 1);
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
+                                    // onRowDelete: oldData =>
+                                    //     new Promise((resolve, reject) => {
+                                    //         setTimeout(() => {
+                                    //             {
+                                    //                 let data = this.state.data;
+                                    //                 const index = data.indexOf(oldData);
+                                    //                 data.splice(index, 1);
+                                    //                 this.setState({ data }, () => resolve());
+                                    //             }
+                                    //             resolve()
+                                    //         }, 1000)
+                                    //     }),
                                 }}
 
                             />
