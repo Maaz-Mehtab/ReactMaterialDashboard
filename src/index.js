@@ -36,12 +36,12 @@ ReactDOM.render(
     <Switch>
       <Route path="/admin" component={Admin} />
       <Route path="/rtl" component={RTL} />
-      <Route path="/Login" component={Login} />
-      <Route path="/Signup" component={Signup} />
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
       {/* <Route path="/AddCustomer" component={AddCustomer} /> */}
       
-      <Redirect from="/" to="/admin/dashboard" />
-      {/* <Redirect from="/" to="/Login" /> */}
+      {/* <Redirect from="/" to="/admin/dashboard" /> */}
+      <Redirect from="/" to="/login" />
     </Switch>
   </Router>,
   document.getElementById("root")

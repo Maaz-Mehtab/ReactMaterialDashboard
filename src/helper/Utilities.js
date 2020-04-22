@@ -1,6 +1,6 @@
 import history from '../History';
 import Storage from './Storage';
-import swal from 'sweetalert';
+// import swal from 'sweetalert';
 export let localStorage_SaveKey = async (key, value) => {
     try {
         await localStorage.setItem(key, value);
@@ -57,8 +57,8 @@ export const discountType = [
 
 ]
 
-export const baseURL = "https://us-central1-testproject-98a49.cloudfunctions.net"
-// export const baseURL = "http://localhost:5000/testproject-98a49/us-central1/"
+// export const baseURL = "https://us-central1-testproject-98a49.cloudfunctions.net/api"
+export const baseURL = "http://localhost:5000/testproject-98a49/us-central1/api"
 
 export const emailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 
@@ -66,26 +66,39 @@ export const stringIsEmpty = (str) => {
     return (!str || /^\s*$/.test(str));
 };
 
-export const usersExist = async (route) => {
-    var response = await localStorage_GetKey("userObject")
+export const usersExist = async (route, props) => {
+    var response = await localStorage_GetKey("token")
     if (response != null) {
-        Storage.userObject = JSON.parse(response);
-        history.replace(route)
-        return Storage.userObject
+        if (route == "/login" || route == "/signup" || route == "/Signup") {
+            props.history.replace("/admin/dashboard")
+        } else {
+            props.history.replace(route)
+        }
     }
     else {
-        history.replace('/Login')
-        return {};
+        props.history.replace('/login')
     }
 }
 
 
-export const SweetAlert = (data) => {
-    swal({
-        title: data.title,
-        text: data.text,
-        icon: data.icon,
-        timer: 3000,
-        button: false
-    })
+export const colors = {
+    errorBackground: "#fdecea",
+    errorText: "#611a15"
 }
+
+export const httpHeaders = () => {
+    let token = localStorage_GetKey('token')
+    return {
+        'Authorization': `Bearer ${token}`
+    }
+}
+
+// export const SweetAlert = (data) => {
+//     swal({
+//         title: data.title,
+//         text: data.text,
+//         icon: data.icon,
+//         timer: 3000,
+//         button: false
+//     })
+// }

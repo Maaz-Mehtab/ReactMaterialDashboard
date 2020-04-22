@@ -23,13 +23,13 @@ const CustomTextField = withStyles({
                 borderColor: 'purple',
             },
         },
-     },
+    },
 })(TextField);
 const useStyles = makeStyles((theme) => ({
     input1: {
         height: 10,
-        justifyContent:'center',
-        alignItems:'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
 })
@@ -41,6 +41,7 @@ export default function CssTextField(props) {
         <CustomTextField
             required
             fullWidth
+            type={props.type || 'text'}
             margin="normal"
             value={props.value}
             label={props.label}
@@ -57,8 +58,8 @@ CssTextField.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     value: PropTypes.string,
-    onChange:PropTypes.func
-  };
+    onChange: PropTypes.func
+};
 
 
 
