@@ -3,9 +3,23 @@ import Axios from "axios";
 
 
 const url = `${util.baseURL}/users`;
+
 export function getAllUsers(params) {
     return Axios.get(`${url}/getAllUsers`, {
         headers: util.httpHeaders(),
         params: params
+    })
+}
+
+export function getSpecificUser(params) {
+    return Axios.get(`${url}/getSpecificUser`, {
+        headers: util.httpHeaders(),
+        params: params
+    })
+}
+
+export function update(payload) {
+    return Axios.post(`${url}/update`, payload, {
+        headers: util.httpHeaders(),
     })
 }

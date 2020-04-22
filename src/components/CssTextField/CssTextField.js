@@ -43,6 +43,7 @@ export default function CssTextField(props) {
             fullWidth
             type={props.type || 'text'}
             margin="normal"
+            disabled={props.disabled || false}
             value={props.value}
             label={props.label}
             InputProps={{ classes: { input: classes.input1 } }}

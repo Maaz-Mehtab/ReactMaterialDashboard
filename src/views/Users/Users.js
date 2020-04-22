@@ -2,7 +2,7 @@ import React from "react";
 import MaterialTable from 'material-table';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
+import { Delete, Edit } from "@material-ui/icons";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import * as util from "../../helper/Utilities";
 import * as userService from "./UserService";
+import { Grid } from "@material-ui/core";
 const useStyles = theme => ({
     modal: {
         display: 'flex',
@@ -89,7 +90,22 @@ class Users extends React.Component {
             },
             {
                 title: 'Status', field: 'status',
-                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.status) ? "#155724" : "#721c24", backgroundColor: (row.status) ? "#d4edda" : "#f8d7da" }}> {row.status == true ? "Verified" : "Not Verified"}</span>
+                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.isVerified) ? "#155724" : "#721c24", backgroundColor: (row.isVerified) ? "#d4edda" : "#f8d7da" }}> {row.isVerified == true ? "Verified" : "Not Verified"}</span>
+            },
+            {
+                title: 'Actions', field: 'actions',
+                render: row => {
+                    return (
+                        <GridContainer
+                            justify="center"
+                        >
+                            <Edit
+                                color="action"
+                                onClick={this.editUser.bind(this, row.uid)}
+                            />
+                        </GridContainer>
+                    )
+                }
             },
         ]
 
@@ -98,21 +114,8 @@ class Users extends React.Component {
         })
     }
 
-    pageChange = (e) => {
-        try {
-            console.log('e pageChange', e);
-        }
-        catch (e) {
-            console.log("pageChange Exception", e)
-        }
-    }
-    rowperChange = (e) => {
-        try {
-            console.log('e rowperChange', e);
-        }
-        catch (e) {
-            console.log("rowperChange Exception", e)
-        }
+    editUser = (uid) => {
+        this.props.history.push(`/admin/user/${uid}`)
     }
 
     ToggleModal = () => {
@@ -126,11 +129,6 @@ class Users extends React.Component {
             modalopen: false
         })
     };
-
-    backdrop = () => {
-        console.log("11111")
-    }
-
 
 
     DropDownChange = (event) => {
@@ -178,8 +176,6 @@ class Users extends React.Component {
                                     })
                                 })}
                                 columns={columns}
-                                onChangePage={(e) => this.pageChange(e)}
-                                onChangeRowsPerPage={(e) => this.rowperChange(e)}
                                 options={{
                                     pageSize: 10,
                                     actionsColumnIndex: -1
@@ -195,34 +191,34 @@ class Users extends React.Component {
                                         }
                                     }
                                 }}
-                                // parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-                                
-                                editable={{
-                                    onRowUpdate: (newData, oldData) =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    const data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data[index] = newData;
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
-                                    // onRowDelete: oldData =>
-                                    //     new Promise((resolve, reject) => {
-                                    //         setTimeout(() => {
-                                    //             {
-                                    //                 let data = this.state.data;
-                                    //                 const index = data.indexOf(oldData);
-                                    //                 data.splice(index, 1);
-                                    //                 this.setState({ data }, () => resolve());
-                                    //             }
-                                    //             resolve()
-                                    //         }, 1000)
-                                    //     }),
-                                }}
+                            // parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
+
+                            // editable={{
+                            //     onRowUpdate: (newData, oldData) =>
+                            //         new Promise((resolve, reject) => {
+                            //             setTimeout(() => {
+                            //                 {
+                            //                     const data = this.state.data;
+                            //                     const index = data.indexOf(oldData);
+                            //                     data[index] = newData;
+                            //                     this.setState({ data }, () => resolve());
+                            //                 }
+                            //                 resolve()
+                            //             }, 1000)
+                            //         }),
+                            // onRowDelete: oldData =>
+                            //     new Promise((resolve, reject) => {
+                            //         setTimeout(() => {
+                            //             {
+                            //                 let data = this.state.data;
+                            //                 const index = data.indexOf(oldData);
+                            //                 data.splice(index, 1);
+                            //                 this.setState({ data }, () => resolve());
+                            //             }
+                            //             resolve()
+                            //         }, 1000)
+                            //     }),
+                            // }}
 
                             />
                         </CardBody>

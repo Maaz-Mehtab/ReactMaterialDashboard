@@ -34,7 +34,7 @@ const dashboardRoutes = [
     sidebar:true
   },
   {
-    path: "/user",
+    path: "/profile",
     name: "User Profile",
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
@@ -76,8 +76,8 @@ const dashboardRoutes = [
     sidebar:false
   },
   {
-    path: "/AddUsers",
-    name: "AddUsers",
+    path: "/user/:id",
+    name: "User",
     icon: Notifications,
     component: AddUsers,
     layout: "/admin",

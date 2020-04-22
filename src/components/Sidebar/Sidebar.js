@@ -31,7 +31,7 @@ export default function Sidebar(props) {
       {routes.map((prop, key) => {
         var activePro = " ";
         var listItemClasses;
-         if (prop.path === "/upgrade-to-pro") {
+        if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
           listItemClasses = classNames({
             [" " + classes[color]]: true
@@ -61,12 +61,12 @@ export default function Sidebar(props) {
                   {prop.icon}
                 </Icon>
               ) : (
-                <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
-                />
-              )}
+                  <prop.icon
+                    className={classNames(classes.itemIcon, whiteFontClasses, {
+                      [classes.itemIconRTL]: props.rtlActive
+                    })}
+                  />
+                )}
               <ListItemText
                 primary={props.rtlActive ? prop.rtlName : prop.name}
                 className={classNames(classes.itemText, whiteFontClasses, {
@@ -94,7 +94,7 @@ export default function Sidebar(props) {
           <img src={logo} alt="logo" className={classes.img} />
         </div>
         {logoText}
-       
+
       </a>
     </div>
   );
@@ -119,8 +119,8 @@ export default function Sidebar(props) {
           {brand}
           <div className={classes.sidebarWrapper}>
             {window.innerWidth < 959 &&
-            <AdminNavbarLinks /> 
-          }
+              <AdminNavbarLinks props={props} />
+            }
             {links}
           </div>
           {image !== undefined ? (
