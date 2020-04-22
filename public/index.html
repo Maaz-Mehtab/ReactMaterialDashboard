@@ -82,4 +82,13 @@
           To create a production bundle, use `npm run build` or `yarn build`.
         -->
   </body>
+
+  <script>
+    window.myCallbackFunc = function () {
+      window.initOne && window.initOne();
+      window.initTwo && window.initTwo();
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_NGgkSC6tIfVA9B0IeUea-b6emd9iAtw&libraries=places&callback=myCallbackFunc"></script>
 </html>
