@@ -1,29 +1,19 @@
 import history from '../History';
 import Storage from './Storage';
 // import swal from 'sweetalert';
-export let localStorage_SaveKey = async (key, value) => {
-    try {
-        await localStorage.setItem(key, value);
-    } catch (error) {
-        console.log("Error saving data" + error);
-    }
+
+export let localStorage_SaveKey = (key, value) => {
+    localStorage.setItem(key, value);
 }
 
-export let localStorage_GetKey = async (key) => {
-    try {
-        const value = await localStorage.getItem(key);
-        return value;
-    } catch (error) {
-        console.log("Error retrieving data" + error);
-    }
+export let localStorage_GetKey = (key) => {
+    const value = localStorage.getItem(key);
+    return value;
+
 }
 
-export let localStorage_RemoveKey = async (key) => {
-    try {
-        await localStorage.removeItem(key);
-    } catch (error) {
-        console.log("Error resetting data" + error);
-    }
+export let localStorage_RemoveKey = (key) => {
+    localStorage.removeItem(key);
 }
 
 export const userType = [
@@ -66,8 +56,8 @@ export const stringIsEmpty = (str) => {
     return (!str || /^\s*$/.test(str));
 };
 
-export const usersExist = async (route, props) => {
-    var response = await localStorage_GetKey("token")
+export const usersExist = (route, props) => {
+    var response = localStorage_GetKey("token")
     if (response != null) {
         if (route == "/login" || route == "/signup" || route == "/Signup") {
             props.history.replace("/admin/dashboard")

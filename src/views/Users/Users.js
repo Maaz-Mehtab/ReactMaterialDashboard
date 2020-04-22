@@ -13,6 +13,8 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import * as util from "../../helper/Utilities";
+import * as userService from "./UserService";
 const useStyles = theme => ({
     modal: {
         display: 'flex',
@@ -54,11 +56,16 @@ class Users extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isVarified: 0,
+            isVerified: 0,
             columns: [],
             data: [],
-            modalopen: false
+            modalopen: false,
+            limit: 10,
+            page: 0,
+            allUsers: []
         }
+        let route = window.location.pathname
+        util.usersExist(route, this.props)
         this.state.data = [
             {
                 id: 1,
@@ -117,12 +124,43 @@ class Users extends React.Component {
             { title: 'Name', field: 'name' },
             { title: 'Email', field: 'email' },
             { title: 'Country', field: 'country' },
-            { title: 'Role', field: 'role' },
+            {
+                title: 'Role', field: 'role',
+                render: row => row.userType.name
+            },
             {
                 title: 'Status', field: 'status',
                 render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.status) ? "#155724" : "#721c24", backgroundColor: (row.status) ? "#d4edda" : "#f8d7da" }}> {row.status == true ? "Varified" : "Not Varified"}</span>
             },
         ]
+        this.fetchUsers = this.fetchUsers.bind(this)
+
+    }
+
+    componentDidMount() {
+        this.fetchUsers()
+    }
+
+    fetchUsers = async () => {
+        let {
+            page,
+            limit
+        } = this.state
+
+        let params = {
+            page,
+            limit
+        }
+        userService.getAllUsers(params)
+            .then(res => {
+                let { data, code, message } = res.data
+                if (code == 200) {
+                    this.setState({
+                        allUsers: data
+                    })
+                }
+            })
+            .catch(err => console.log(err))
     }
 
     pageChange = (e) => {
@@ -163,12 +201,13 @@ class Users extends React.Component {
     DropDownChange = (event) => {
         console.log("event", event);
         this.setState({
-            isVarified: event.target.value
+            isVerified: event.target.value
         })
     }
 
     render() {
         const { classes } = this.props;
+        const { allUsers, columns } = this.state;
         return (
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
@@ -182,8 +221,8 @@ class Users extends React.Component {
                         <CardBody>
                             <MaterialTable
                                 title=""
-                                data={this.state.data}
-                                columns={this.state.columns}
+                                data={allUsers}
+                                columns={columns}
                                 onChangePage={(e) => this.pageChange(e)}
                                 onChangeRowsPerPage={(e) => this.rowperChange(e)}
                                 localization={{
@@ -197,7 +236,7 @@ class Users extends React.Component {
                                         }
                                     }
                                 }}
-                                parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
+                                // parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
                                 actions={[
                                     {
                                         icon: 'add',
@@ -290,7 +329,7 @@ class Users extends React.Component {
                                     id="outlined-select-currency"
                                     select
                                     label="Select"
-                                    value={this.state.isVarified}
+                                    value={this.state.isVerified}
                                     InputProps={{ classes: { input: classes.input1 } }}
                                     onChange={(e) => this.DropDownChange(e)}
                                     variant="outlined"
