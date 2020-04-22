@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import Grid from '@material-ui/core/Grid';
+import GridItem from "components/Grid/GridItem.js";
+import GridContainer from "components/Grid/GridContainer.js";
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
-const mapStyles = {
-    map: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%'
-    }
-};
+
 export class CurrentLocation extends React.Component {
     constructor(props) {
         super(props);
@@ -17,11 +14,21 @@ export class CurrentLocation extends React.Component {
             currentLocation: {
                 lat: lat,
                 lng: lng
-            }
+            },
+
+            width: 0,
+            height: 0
 
         };
+        this.updateDimensions = this.updateDimensions.bind(this);
     }
+    updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
     componentWillReceiveProps(nextprops) {
         if (nextprops.latlng != undefined) {
             let lat = nextprops.latlng.split('/')[0];
@@ -47,6 +54,7 @@ export class CurrentLocation extends React.Component {
     }
 
     componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
         if (this.props.centerAroundCurrentLocation) {
             if (navigator && navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(pos => {
@@ -119,14 +127,24 @@ export class CurrentLocation extends React.Component {
         });
     }
     render() {
+        const mapStyles = {
+            map: {
+                position: 'absolute',
+                width: (window.innerWidth < 365) ? 275 : (window.innerWidth > 359 && window.innerWidth < 460) ? 335 : (window.innerWidth > 950 && window.innerWidth < 1000) ? 300 : 360,
+                height: 230,
+
+            }
+        };
         const style = Object.assign({}, mapStyles.map);
         return (
-            <div>
-                <div style={style} ref="map">
-                    Loading map...
-           </div>
-                {this.renderChildren()}
-            </div>
+            <Grid>
+                <Grid justify="center">
+                    <Grid style={style} ref="map">
+                        Loading map...
+                    </Grid>
+                    {this.renderChildren()}
+                </Grid>
+            </Grid >
         );
     }
 

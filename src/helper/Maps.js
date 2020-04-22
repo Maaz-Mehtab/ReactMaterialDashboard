@@ -3,10 +3,7 @@ import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 import CurrentLocation from './CurrentLocation';
 import LocationSearchInput from './LocationSearchInput';
 import Storage from './Storage';
-const mapStyles = {
-    width: '100%',
-    height: '100%',
-};
+
 
 
 export class MapContainer extends Component {
@@ -21,6 +18,7 @@ export class MapContainer extends Component {
         }
     }
     componentWillReceiveProps(nextprops) {
+        console.log("nextprops",nextprops);
         if (nextprops.autocompleteLocation.lat != null) {
             this.setState({
                 autocompleteLocation: nextprops.autocompleteLocation
@@ -61,7 +59,6 @@ export class MapContainer extends Component {
                         centerAroundCurrentLocation
                         google={this.props.google}
                     >
-
                         <Marker onClick={this.onMarkerClick} name={'current location'} />
                         <InfoWindow
                             marker={this.state.activeMarker}
@@ -103,5 +100,5 @@ export class MapContainer extends Component {
         );
     }
 } export default GoogleApiWrapper({
-    apiKey: 'AIzaSyAoh4bfriSEBkYOKNOs9Z3tQ117skweAUw'
+    apiKey: 'AIzaSyD_NGgkSC6tIfVA9B0IeUea-b6emd9iAtw'
 })(MapContainer);
