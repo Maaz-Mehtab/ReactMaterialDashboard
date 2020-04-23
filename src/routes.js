@@ -152,7 +152,7 @@ const dashboardRoutes = [
     icon: LocationOn,
     component: AddEditOrder,
     layout: "/admin",
-    sidebar: true
+    sidebar: false
 
   },
   
