@@ -22,6 +22,8 @@ import Customer from "views/Customer/Customer.js";
 import AddCustomer from './views/Customer/AddCustomer';
 import AddUsers from './views/Users/AddUsers';
 import AddInventory from './views/Inventory/AddInventory';
+import Orders from "./views/Orders/Orders";
+import AddEditOrder from "./views/Orders/AddEditOrder";
 
 const dashboardRoutes = [
   {
@@ -31,7 +33,7 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
   },
   {
     path: "/profile",
@@ -40,7 +42,7 @@ const dashboardRoutes = [
     icon: Person,
     component: UserProfile,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
 
   },
   {
@@ -49,7 +51,7 @@ const dashboardRoutes = [
     icon: Person,
     component: Users,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
   },
   {
     path: "/Inventory",
@@ -57,7 +59,7 @@ const dashboardRoutes = [
     icon: Notifications,
     component: Inventory,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
   },
   {
     path: "/Customer",
@@ -65,7 +67,7 @@ const dashboardRoutes = [
     icon: Notifications,
     component: Customer,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
   },
   {
     path: "/AddCustomer",
@@ -73,7 +75,7 @@ const dashboardRoutes = [
     icon: Notifications,
     component: AddCustomer,
     layout: "/admin",
-    sidebar:false
+    sidebar: false
   },
   {
     path: "/user/:id",
@@ -81,7 +83,7 @@ const dashboardRoutes = [
     icon: Notifications,
     component: AddUsers,
     layout: "/admin",
-    sidebar:false
+    sidebar: false
   },
   {
     path: "/updateInventory/:id",
@@ -97,16 +99,16 @@ const dashboardRoutes = [
     icon: Notifications,
     component: AddInventory,
     layout: "/admin",
-    sidebar:false
+    sidebar: false
   },
-  {
-    path: "/DataTable",
-    name: "Orders",
-    icon: Notifications,
-    component: DataTable,
-    layout: "/admin",
-    sidebar:true
-  },
+  // {
+  //   path: "/DataTable",
+  //   name: "Orders",
+  //   icon: Notifications,
+  //   component: DataTable,
+  //   layout: "/admin",
+  //   sidebar: true
+  // },
 
   // {
   //   path: "/table",
@@ -131,7 +133,7 @@ const dashboardRoutes = [
     icon: BubbleChart,
     component: Icons,
     layout: "/admin",
-    sidebar:true
+    sidebar: true
   },
   {
     path: "/maps",
@@ -141,6 +143,27 @@ const dashboardRoutes = [
     component: Maps,
     layout: "/admin"
   },
+  {
+    path: "/orders",
+    name: "Orders",
+    rtlName: "خرائط",
+    icon: LocationOn,
+    component: Orders,
+    layout: "/admin",
+    sidebar: true
+
+  },
+  {
+    path: "/addOrder",
+    name: "Add Orders",
+    rtlName: "خرائط",
+    icon: LocationOn,
+    component: AddEditOrder,
+    layout: "/admin",
+    sidebar: false
+
+  },
+  
   // {
   //   path: "/notifications",
   //   name: "Notifications",
@@ -149,7 +172,7 @@ const dashboardRoutes = [
   //   component: NotificationsPage,
   //   layout: "/admin"
   // },
- 
+
   // {
   //   path: "/rtl-page",
   //   name: "RTL Support",

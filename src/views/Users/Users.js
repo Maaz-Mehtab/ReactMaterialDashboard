@@ -90,7 +90,13 @@ class Users extends React.Component {
             },
             {
                 title: 'Status', field: 'status',
-                render: row => <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.isVerified) ? "#155724" : "#721c24", backgroundColor: (row.isVerified) ? "#d4edda" : "#f8d7da" }}> {row.isVerified == true ? "Verified" : "Not Verified"}</span>
+                render: row =>
+                    <GridContainer
+                        justify="center"
+                    >
+                        <span style={{ borderRadius: 10, paddingRight: 20, paddingTop: 1, paddingBottom: 1, paddingLeft: 20, color: (row.isVerified) ? "#155724" : "#721c24", backgroundColor: (row.isVerified) ? "#d4edda" : "#f8d7da" }}> {row.isVerified == true ? "Verified" : "Not Verified"}</span>
+                    </GridContainer>
+
             },
             {
                 title: 'Actions', field: 'actions',
@@ -191,35 +197,7 @@ class Users extends React.Component {
                                         }
                                     }
                                 }}
-                            // parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-
-                            // editable={{
-                            //     onRowUpdate: (newData, oldData) =>
-                            //         new Promise((resolve, reject) => {
-                            //             setTimeout(() => {
-                            //                 {
-                            //                     const data = this.state.data;
-                            //                     const index = data.indexOf(oldData);
-                            //                     data[index] = newData;
-                            //                     this.setState({ data }, () => resolve());
-                            //                 }
-                            //                 resolve()
-                            //             }, 1000)
-                            //         }),
-                            // onRowDelete: oldData =>
-                            //     new Promise((resolve, reject) => {
-                            //         setTimeout(() => {
-                            //             {
-                            //                 let data = this.state.data;
-                            //                 const index = data.indexOf(oldData);
-                            //                 data.splice(index, 1);
-                            //                 this.setState({ data }, () => resolve());
-                            //             }
-                            //             resolve()
-                            //         }, 1000)
-                            //     }),
-                            // }}
-
+                         
                             />
                         </CardBody>
                     </Card>
