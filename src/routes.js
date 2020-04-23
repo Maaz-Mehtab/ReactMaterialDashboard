@@ -84,7 +84,15 @@ const dashboardRoutes = [
     sidebar:false
   },
   {
-    path: "/AddInventory",
+    path: "/updateInventory/:id",
+    name: "Add/Edit Inventory",
+    icon: Notifications,
+    component: AddInventory,
+    layout: "/admin",
+    sidebar:false
+  },
+  {
+    path: "/Addinventory",
     name: "Add/Edit Inventory",
     icon: Notifications,
     component: AddInventory,

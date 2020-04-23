@@ -2,7 +2,7 @@ import React from "react";
 import MaterialTable from 'material-table';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
+import { Delete, Edit } from "@material-ui/icons";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -13,6 +13,8 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import * as InventoryService from "./InventoryService";
+import * as util from "../../helper/Utilities";
 const useStyles = theme => ({
     modal: {
         display: 'flex',
@@ -57,74 +59,58 @@ class Inventory extends React.Component {
             isVarified: 0,
             columns: [],
             data: [],
-            modalopen: false
+            modalopen: false,
+            limit: 10,
+            page: 0,
+            allInventory: [],
+            totalRecords: 0
         }
-        this.state.data = [
-            {
+        let route = window.location.pathname
+        util.usersExist(route, this.props)
+        this.bindFunctions()
+    }
 
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-            {
-
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-            {
-
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-            {
-
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-            {
-
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-            {
-
-                productName: 'CangoVirus',
-                productRetailPrice: 'maaz@10000.com',
-                productInternalPrice: "9500",
-                productQty: "2",
-                productValue: "20000",
-
-            },
-        ];
-        this.state.columns = [
+    bindFunctions() {
+        this.makeColumns = this.makeColumns.bind(this)
+    }
+    componentDidMount() {
+        this.makeColumns()
+    }
+    makeColumns() {
+        let columns = [
             { title: 'Name', field: 'productName' },
             { title: 'Retail Price', field: 'productRetailPrice' },
             { title: 'Internal Price', field: 'productInternalPrice' },
             { title: 'Quantity', field: 'productQty' },
             { title: 'Value', field: 'productValue', },
+            {
+                title: 'Actions', field: 'actions',
+                render: row => {
+                    return (
+                        <GridItem
+                            justify="center"
+                        >
+                            <Edit
+                                color="action"
+                                onClick={this.editInventory.bind(this, row.uid)}
+                            />
+                            <Delete
+                                color="action"
+                                // onClick={this.editUser.bind(this, row.uid)}
+                            />
+                        </GridItem>
+                    )
+                }
+            },
         ]
+
+        this.setState({
+            columns
+        })
     }
-
-
+    editInventory = (uid) => {
+        this.props.history.push(`/admin/updateInventory/${uid}`)
+    }
     pageChange = (e) => {
         try {
             console.log('e pageChange', e);
@@ -147,7 +133,17 @@ class Inventory extends React.Component {
             isVarified: event.target.value
         })
     }
-
+    fetchInventory= (query) => {
+      let { limit } = this.state
+        let params = {
+            page: query.page,
+            limit: limit
+        }
+        if (query.search) {
+            params.search = query.search
+        }
+        return InventoryService.getAllInventroy(params)
+    }
     render() {
         const { classes } = this.props;
         return (
@@ -163,7 +159,16 @@ class Inventory extends React.Component {
                         <CardBody>
                             <MaterialTable
                                 title=""
-                                data={this.state.data}
+                                data={query => new Promise(async (resolve, reject) => {
+                                    let res = await this.fetchInventory(query)
+                                    let { data, totalRecords } = res.data
+                                    resolve({
+                                        data: data,
+                                        page: query.page,
+                                        totalCount: totalRecords
+                                    })
+                                })}
+                                // data={this.state.data}
                                 columns={this.state.columns}
                                 onChangePage={(e) => this.pageChange(e)}
                                 onChangeRowsPerPage={(e) => this.rowperChange(e)}
@@ -183,35 +188,10 @@ class Inventory extends React.Component {
                                         icon: 'add',
                                         tooltip: 'Add User',
                                         isFreeAction: true,
-                                        onClick: (event) => this.props.history.push('/admin/AddInventory')
+                                        onClick: (event) => this.props.history.push('/admin/Addinventory')
                                     }
                                 ]}
-                                editable={{
-                                    onRowUpdate: (newData, oldData) =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    const data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data[index] = newData;
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
-                                    onRowDelete: oldData =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    let data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data.splice(index, 1);
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
-                                }}
+                               
 
                             />
                         </CardBody>

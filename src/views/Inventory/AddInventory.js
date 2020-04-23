@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssTextField from 'components/CssTextField/CssTextField.js';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
-
+import * as InventoryService from "./InventoryService"
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
@@ -56,18 +56,71 @@ export default function AddInventory(props) {
         productRetailPrice: '',
         productInternalPrice: '',
         quantity: '',
-      });
-    
-      const handleChange = (event) => {
-         setValues({
-          ...values,
-          [event.target.name]: event.target.value,
+        uid: ''
+    });
+    useEffect(() => {
+        let { id } = props.match.params
+        let params = {
+            uid: id
+        }
+        InventoryService.getSpecificInventory(params)
+            .then(res => {
+                let { code, data } = res.data
+                setValues({
+                    ...values,
+                    productName: data.productName,
+                    productRetailPrice: data.productRetailPrice,
+                    productInternalPrice: data.productInternalPrice,
+                    quantity: data.productQty,
+                    uid: id
+                });
+            }).catch(err => console.log(err))
+    }, [])
+    const handleChange = (event) => {
+        setValues({
+            ...values,
+            [event.target.name]: event.target.value,
         });
-      };
-  
+    };
+
+
     const AddUpdateUser = () => {
-        console.log("AddUpdateUser");
+        if (Object.keys(props.match.params).length > 0) {
+            let payload = {
+                productName: values.productName,
+                productRetailPrice: values.productRetailPrice,
+                productQty: values.quantity,
+                productInternalPrice: values.productInternalPrice,
+                productValue: values.quantity * values.productRetailPrice,
+                uid: values.uid
+            }
+            InventoryService.update(payload)
+                .then(res => {
+                    let { code } = res.data
+                    if (code == 200) {
+                        props.history.push('/admin/Inventory')
+                    }
+                }).catch(err => console.log(err))
+        }
+        else {
+            let payload = {
+                productName: values.productName,
+                productRetailPrice: values.productRetailPrice,
+                productQty: values.quantity,
+                productInternalPrice: values.productInternalPrice,
+                productValue: values.quantity * values.productRetailPrice,
+                isActive: true
+            }
+            InventoryService.addInventory(payload)
+                .then(res => {
+                    let { code } = res.data
+                    if (code == 200) {
+                        props.history.push('/admin/Inventory')
+                    }
+                }).catch(err => console.log(err))
+        }
     }
+
     return (
         <GridContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
             <GridItem xs={12} sm={12} md={12}>
@@ -82,7 +135,7 @@ export default function AddInventory(props) {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6} md={4} >
                                 <CssTextField
-                                  
+
                                     value={values.productName}
                                     onChange={handleChange}
                                     label="prodcut Name"
@@ -95,7 +148,7 @@ export default function AddInventory(props) {
                                 <CssTextField
                                     value={values.productRetailPrice}
                                     onChange={handleChange}
-                                     label="product Retail Price"
+                                    label="product Retail Price"
                                     name="productRetailPrice"
                                     type="Number"
 
