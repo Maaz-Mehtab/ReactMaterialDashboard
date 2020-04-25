@@ -20,6 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import CssTextField from 'components/CssTextField/CssTextField.js';
 import * as util from "../../helper/Utilities"
+import * as commonService from "../../helper/commonService"
 import * as productService from "../Inventory/InventoryService"
 import * as orderService from "./OrderService"
 import moment from "moment";
@@ -98,17 +99,30 @@ export default function AddEditOrder(props) {
         products: [],
         selectedProducts: [],
         errorArray: [],
-        isFormOrderValid: true
+        isFormOrderValid: true,
+        customerId: ''
     });
+
+    const [customers, setCustomers] = React.useState([]);
+    const [orderNumber, setorderNumber] = React.useState('');
 
     useEffect(() => {
         let { id } = props.match.params
         let params = {
             uid: id
         }
+        getOrderNumber()
+        getCustomersForSelect()
         getProducts()
     }, [])
 
+    function getOrderNumber() {
+        let random = util.makeRandomString(5)
+
+        let orderNumber = `ord-${random}-${moment().format("MM-YYYY")}`
+
+        setorderNumber(orderNumber)
+    }
 
     const getProducts = () => {
         productService.getAllInventoryForSelect()
@@ -171,7 +185,6 @@ export default function AddEditOrder(props) {
     }
 
     function onchangeDiscountType(index, event) {
-        debugger
         let { selectedProducts } = values
         let findProduct = selectedProducts[index]
         let discount = findProduct.discount
@@ -207,7 +220,6 @@ export default function AddEditOrder(props) {
 
     function onChangeDiscount(index, event) {
         let { selectedProducts } = values
-        debugger
         let findProduct = selectedProducts[index]
         let discount = event.target.value
         let quantity = findProduct.quantity
@@ -229,12 +241,20 @@ export default function AddEditOrder(props) {
     }
 
     function addOrder() {
-        let { selectedProducts, isFormOrderValid, errorArray } = values
+        let { selectedProducts, isFormOrderValid, errorArray, customerId } = values
         errorArray = []
 
         if (selectedProducts.length == 0) {
             isFormOrderValid = false
             errorArray.push("Please select some products.")
+        } else {
+            isFormOrderValid = true
+            errorArray = []
+        }
+
+        if (customerId == "") {
+            isFormOrderValid = false
+            errorArray.push("Please a Customer.")
         } else {
             isFormOrderValid = true
             errorArray = []
@@ -248,20 +268,46 @@ export default function AddEditOrder(props) {
 
         if (isFormOrderValid) {
             let date = moment().format("YYYY-MM-DD")
+            let customer = customers.find(x => x.id == customerId)
             let obj = {
                 date: date,
                 selectedProducts,
-
+                orderNumber,
+                customerName: customer.name,
+                customerId: customer.id
             }
             orderService.addOrder(obj)
                 .then(res => {
                     let { code, message, data } = res.data
-
                     if (code == 200) {
                         props.history.push('/admin/orders')
                     }
                 }).catch(err => console.log(err))
         }
+    }
+
+    function onchangeCustomer(event) {
+        setValues({
+            ...values,
+            [event.target.name]: event.target.value
+        });
+    }
+
+    function getCustomersForSelect() {
+        commonService.getCustomersForSelect()
+            .then(res => {
+                let { code, message, data } = res.data
+                if (code == 200) {
+                    let customers = data.map(x => {
+                        return {
+                            id: x.cId,
+                            name: x.CustomerName
+                        }
+                    })
+                    setCustomers(customers)
+                }
+
+            }).catch(err => console.log(err))
     }
 
     return (
@@ -279,17 +325,60 @@ export default function AddEditOrder(props) {
                             values.isFormOrderValid == false ?
                                 <Grid className={classes.errorAlert} >
                                     {
-                                        values.errorArray.map(x => x)
+                                        values.errorArray.map((x, ind) => {
+                                            return (
+                                                <p key={ind} >
+                                                    {x}
+                                                </p>
+                                            )
+                                        })
                                     }
                                 </Grid>
                                 :
                                 null
                         }
-                        <Grid  >
-                            <h3>Products List</h3>
-                        </Grid>
-                        <hr />
                         <Grid container spacing={2}>
+                            <Grid item xs={12} sm={12} md={12} >
+                                <h3>Order Details</h3>
+                                <hr />
+                            </Grid>
+                            <Grid item xs={6} sm={3} md={3}>
+                                <CssTextField
+                                    name="OrderNumber"
+                                    label="Order Number"
+                                    type="text"
+                                    value={orderNumber}
+                                    disabled={true}
+                                    id="OrderNumber"
+                                />
+                            </Grid>
+                            <Grid item xs={6} sm={3} md={3}>
+                                <CustomDropDown
+                                    fullWidth
+                                    select
+                                    margin="normal"
+                                    label="Customers"
+                                    name="customerId"
+                                    value={values.customerId}
+                                    InputProps={{ classes: { input: classes.input1 } }}
+                                    onChange={onchangeCustomer.bind(this)}
+                                    variant="outlined"
+                                >
+                                    {
+                                        customers.map(x => {
+                                            return (
+                                                <MenuItem value={x.id} key={x.id} > {x.name}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </CustomDropDown>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={12} md={12} >
+                                <h3>Products List</h3>
+                                <hr />
+                            </Grid>
                             {
                                 values.products.map(x => {
                                     return (
