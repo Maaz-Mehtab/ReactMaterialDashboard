@@ -27,3 +27,8 @@ export function addInventory(payload) {
         headers: util.httpHeaders(),
     })
 }
+export function getAllInventoryForSelect() {
+    return Axios.get(`${url}/getAllInventoryForSelect`, {
+        headers: util.httpHeaders(),
+    })
+}

@@ -48,7 +48,7 @@ export const discountType = [
 ]
 
 // export const baseURL = "https://us-central1-testproject-98a49.cloudfunctions.net/api"
-export const baseURL = "http://localhost:5001/testproject-98a49/us-central1/api"
+export const baseURL = "http://localhost:5000/testproject-98a49/us-central1/api"
 
 export const emailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 

@@ -10,3 +10,9 @@ export function getAllOrders(params) {
         params: params
     })
 }
+
+export function addOrder(payload) {
+    return Axios.post(`${url}/addOrder`, payload, {
+        headers: util.httpHeaders(),
+    })
+}
