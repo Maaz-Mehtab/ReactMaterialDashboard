@@ -78,6 +78,14 @@ const dashboardRoutes = [
     sidebar: false
   },
   {
+    path: "/updateCustomer/:id",
+    name: "AddCustomer",
+    icon: Notifications,
+    component: AddCustomer,
+    layout: "/admin",
+    sidebar: false
+  },
+  {
     path: "/user/:id",
     name: "User",
     icon: Notifications,
