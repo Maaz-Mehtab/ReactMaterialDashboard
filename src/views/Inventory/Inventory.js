@@ -186,7 +186,7 @@ class Inventory extends React.Component {
                                actions={[
                                     {
                                         icon: 'add',
-                                        tooltip: 'Add User',
+                                        tooltip: 'Add Product',
                                         isFreeAction: true,
                                         onClick: (event) => this.props.history.push('/admin/Addinventory')
                                     }

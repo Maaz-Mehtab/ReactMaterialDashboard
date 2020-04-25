@@ -2,7 +2,7 @@ import React from "react";
 import MaterialTable from 'material-table';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
+import { Delete, Edit } from "@material-ui/icons";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -14,8 +14,9 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
-
-
+import * as CustomerService from "./CustomerService";
+import * as util from "../../helper/Utilities";
+import * as InventoryService from "../Inventory/InventoryService";
 
 const useStyles = theme => ({
     modal: {
@@ -58,85 +59,63 @@ class Customer extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isVarified: 0,
             columns: [],
             data: [],
-            modalopen: false
+            modalopen: false,
+            limit: 10,
+            page: 0,
+            allCustomer: [],
+            totalRecords: 0
         }
-        this.state.data = [
-            {
+        let route = window.location.pathname
+        util.usersExist(route, this.props)
+        this.bindFunctions()
+    }
+    bindFunctions() {
+        this.makeColumns = this.makeColumns.bind(this)
+    }
+    componentDidMount() {
+        this.makeColumns()
+   
+    }
 
-                CustomerId: '7day hospital',
-                CustomerName: 'maaz@10000.com',
-                ContactPerson: "7 day hospital",
-                ContactNumber: "12312313",
-                country: "Pakistan",
-                customerLocation: {
-                    longitude: 67.01813849999999,
-                    country: " Pakistan",
-                    latitude: 24.8595543,
-                    area: "Memon Hospital, M.A Jinnah Road, Karachi, Pakistan"
-                },
+    
 
-            },
-            {
-
-                CustomerId: '7day hospital',
-                CustomerName: 'maaz@10000.com',
-                ContactPerson: "7 day hospital",
-                ContactNumber: "12312313",
-                country: "Pakistan",
-                customerLocation: {
-                    longitude: 67.01813849999999,
-                    country: " Pakistan",
-                    latitude: 24.8595543,
-                    area: "Memon Hospital, M.A Jinnah Road, Karachi, Pakistan"
-                },
-
-            },
-            {
-
-                CustomerId: '7day hospital',
-                CustomerName: 'maaz@10000.com',
-                ContactPerson: "7 day hospital",
-                ContactNumber: "12312313",
-                country: "Pakistan",
-                customerLocation: {
-                    longitude: 67.01813849999999,
-                    country: " Pakistan",
-                    latitude: 24.8595543,
-                    area: "Memon Hospital, M.A Jinnah Road, Karachi, Pakistan"
-                },
-
-            },
-            {
-
-                CustomerId: '7day hospital',
-                CustomerName: 'maaz@10000.com',
-                ContactPerson: "7 day hospital",
-                ContactNumber: "12312313",
-                country: "Pakistan",
-                customerLocation: {
-                    longitude: 67.01813849999999,
-                    country: " Pakistan",
-                    latitude: 24.8595543,
-                    area: "Memon Hospital, M.A Jinnah Road, Karachi, Pakistan"
-                },
-            },
-        ];
-        this.state.columns = [
+    makeColumns() {
+        let columns = [
             { title: 'ReferenceId', field: 'CustomerId' },
             { title: 'Customer Name', field: 'CustomerName' },
             { title: 'Cotact Person Name', field: 'ContactPerson' },
             { title: 'Cantact Person Number', field: 'ContactNumber' },
-            { title: 'Country', field: 'country', },
-            { title: 'Location', field: `${'customerLocation.area'}` },
-            { title: 'Latitude', field: `${'customerLocation.latitude'}` },
-            { title: 'Longitude', field: `${'customerLocation.longitude'}` },
-            // { title: 'Lat / Long', field: `${'customerLocation.latitude'} `},
+            { title: 'Country', field: `${'customerLocation.country'}` },
+            {
+                title: 'Actions', field: 'actions',
+                render: row => {
+                    return (
+                        <GridItem
+                            justify="center"
+                        >
+                            <Edit
+                                color="action"
+                                onClick={this.editCustomer.bind(this, row.uid)}
+                            />
+                            <Delete
+                                color="action"
+                            // onClick={this.editUser.bind(this, row.uid)}
+                            />
+                        </GridItem>
+                    )
+                }
+            },
         ]
-    }
 
+        this.setState({
+            columns
+        })
+    }
+    editCustomer = (uid) => {
+        this.props.history.push(`/admin/updateCustomer/${uid}`)
+    }
     pageChange = (e) => {
         try {
             console.log('e pageChange', e);
@@ -154,35 +133,18 @@ class Customer extends React.Component {
         }
     }
 
-    ToggleModal = () => {
-        this.setState({
-            modalopen: !this.state.modalopen
-        })
-    };
 
-    handleClose = () => {
-        this.setState({
-            modalopen: false
-        })
-    };
-
-    backdrop = () => {
-        console.log("11111")
+    fetchCustomer = (query) => {
+        let { limit } = this.state
+        let params = {
+            page: query.page,
+            limit: limit
+        }
+        if (query.search) {
+            params.search = query.search
+        }
+        return CustomerService.getAllCustomers(params)
     }
-    AddCustomer = () => {
-        console.log("addCustomer",this.props);
-        this.props.history.push('/admin/AddCustomer')
-       
-    }
-
-
-    DropDownChange = (event) => {
-        console.log("event", event);
-        this.setState({
-            isVarified: event.target.value
-        })
-    }
-
     render() {
         const { classes } = this.props;
         return (
@@ -198,7 +160,15 @@ class Customer extends React.Component {
                         <CardBody>
                             <MaterialTable
                                 title=""
-                                data={this.state.data}
+                                data={query => new Promise(async (resolve, reject) => {
+                                    let res = await this.fetchCustomer(query)
+                                    let { data, totalRecords } = res.data
+                                    resolve({
+                                        data: data,
+                                        page: query.page,
+                                        totalCount: totalRecords
+                                    })
+                                })}
                                 columns={this.state.columns}
                                 onChangePage={(e) => this.pageChange(e)}
                                 onChangeRowsPerPage={(e) => this.rowperChange(e)}
@@ -216,49 +186,11 @@ class Customer extends React.Component {
                                 actions={[
                                     {
                                         icon: 'add',
-                                        tooltip: 'Add User',
+                                        tooltip: 'Add Customer',
                                         isFreeAction: true,
-                                        onClick: (event) => { this.AddCustomer() }
+                                        onClick: (event) => this.props.history.push('/admin/AddCustomer')
                                     }
                                 ]}
-                                editable={{
-                                    // onRowAdd: newData =>
-                                    //     new Promise((resolve, reject) => {
-                                    //         setTimeout(() => {
-                                    //             {
-                                    //                 const data = this.state.data;
-                                    //                 data.push(newData);
-                                    //                 this.setState({ data }, () => resolve());
-                                    //             }
-                                    //             resolve()
-                                    //         }, 1000)
-                                    //     }),
-                                    onRowUpdate: (newData, oldData) =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    const data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data[index] = newData;
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
-                                    onRowDelete: oldData =>
-                                        new Promise((resolve, reject) => {
-                                            setTimeout(() => {
-                                                {
-                                                    let data = this.state.data;
-                                                    const index = data.indexOf(oldData);
-                                                    data.splice(index, 1);
-                                                    this.setState({ data }, () => resolve());
-                                                }
-                                                resolve()
-                                            }, 1000)
-                                        }),
-                                }}
-
                                 detailPanel={
                                     [
                                         {
@@ -275,7 +207,7 @@ class Customer extends React.Component {
                                                         <div style={{ display: 'flex', flexDirection: 'column', }}>
                                                             <span style={{ padding: 10 }}>
                                                                 <span style={{}}>
-                                                                    <b> Customer Name  </b>: {rowData.ContactPerson}
+                                                                    <b> Customer Name  </b>: {rowData.CustomerName}
                                                                 </span>
                                                             </span>
                                                             <span style={{ padding: 10 }}>
@@ -283,6 +215,13 @@ class Customer extends React.Component {
                                                             </span>
                                                             <span style={{ padding: 10 }}>
                                                                 <b> Latitude / Logitude</b> : {rowData.customerLocation.latitude + " / " + rowData.customerLocation.longitude}
+                                                            </span>
+                                                            <span style={{ padding: 10 }}>
+                                                                <b> Interest of Product</b> <br />
+                                                                {rowData.productList.map((val, index) => {
+                                                                    return (<p> {index + 1 + ")"} {val.productName}</p>)
+                                                                })}
+
                                                             </span>
                                                         </div>
                                                     </div>
