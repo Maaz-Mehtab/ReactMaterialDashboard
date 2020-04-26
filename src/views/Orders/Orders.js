@@ -53,6 +53,9 @@ class Orders extends React.Component {
 
             },
             {
+                title: 'Customer', field: 'customerName',
+            },
+            {
                 title: 'Total Quantity', field: 'totalQuantity',
                 render: row => this.getTotalQuatity(row.selectedProducts)
             },

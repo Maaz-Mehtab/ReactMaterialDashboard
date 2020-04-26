@@ -64,7 +64,16 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: util.colors.errorBackground,
         color: util.colors.errorText,
         padding: 20
-    }
+    },
+    checkbox: {
+        color: "purple"
+    },
+    checked: {
+        color: "purple"
+    },
+    MuiChecked: {
+        color: "purple"
+    },
 }));
 
 
@@ -267,7 +276,7 @@ export default function AddEditOrder(props) {
         });
 
         if (isFormOrderValid) {
-            let date = moment().format("YYYY-MM-DD")
+            let date = moment().format("DD MMM YYYY")
             let customer = customers.find(x => x.id == customerId)
             let obj = {
                 date: date,
@@ -383,12 +392,19 @@ export default function AddEditOrder(props) {
                                 values.products.map(x => {
                                     return (
                                         <Grid key={x.productId} item xs={6} sm={4} md={3} >
-                                            <FormGroup row>
+                                            {/* <FormGroup row>
                                                 <FormControlLabel
                                                     control={<Checkbox name={x.productId} onChange={onProductChange} value={x.productId} />}
                                                     label={x.productName}
                                                 />
-                                            </FormGroup>
+                                            </FormGroup> */}
+
+                                            <Checkbox
+                                                value={x.productId}
+                                                color="default"
+                                                onChange={onProductChange}
+                                                className={[classes.checkbox, classes.checked]} />
+                                            {x.productName}
                                         </Grid>
                                     )
                                 })
