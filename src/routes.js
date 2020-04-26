@@ -4,6 +4,9 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
+import People from "@material-ui/icons/People";
+import AddShoppingCart from "@material-ui/icons/AddShoppingCart";
+import ListAlt from "@material-ui/icons/ListAlt";
 import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 // core components/views for Admin layout
@@ -56,7 +59,7 @@ const dashboardRoutes = [
   {
     path: "/Inventory",
     name: "Inventory",
-    icon: Notifications,
+    icon: AddShoppingCart,
     component: Inventory,
     layout: "/admin",
     sidebar: true
@@ -64,7 +67,7 @@ const dashboardRoutes = [
   {
     path: "/Customer",
     name: "Customers",
-    icon: Notifications,
+    icon: People,
     component: Customer,
     layout: "/admin",
     sidebar: true
@@ -134,15 +137,15 @@ const dashboardRoutes = [
   //   component: Typography,
   //   layout: "/admin"
   // },
-  {
-    path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
-    icon: BubbleChart,
-    component: Icons,
-    layout: "/admin",
-    sidebar: true
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   rtlName: "الرموز",
+  //   icon: BubbleChart,
+  //   component: Icons,
+  //   layout: "/admin",
+  //   sidebar: true
+  // },
   {
     path: "/maps",
     name: "Maps",
@@ -155,7 +158,7 @@ const dashboardRoutes = [
     path: "/orders",
     name: "Orders",
     rtlName: "خرائط",
-    icon: LocationOn,
+    icon: ListAlt,
     component: Orders,
     layout: "/admin",
     sidebar: true
