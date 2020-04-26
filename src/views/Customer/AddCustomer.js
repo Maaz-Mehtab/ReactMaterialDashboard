@@ -15,7 +15,9 @@ import Map from '../../helper/Maps';
 import CurrentLocation from '../../helper/CurrentLocation';
 import * as CustomerService from "./CustomerService";
 import * as InventoryService from "../Inventory/InventoryService";
+import * as commonService from "../../helper/commonService";
 import Checkbox from '@material-ui/core/Checkbox';
+import * as util from "../../helper/Utilities"
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
@@ -60,15 +62,23 @@ const useStyles = makeStyles((theme) => ({
     MuiChecked: {
         color: "purple"
     },
+    errorAlert: {
+        backgroundColor: util.colors.errorBackground,
+        color: util.colors.errorText,
+        padding: 20
+    }
 }));
 
 
 export default function AddCustomer(props) {
     const classes = useStyles();
 
+    var [isFormOrderValid, setisFormOrderValid] = React.useState(true)
+    var [errorArray, seterrorArray] = React.useState([])
     var [seletedLocationAddress, setseletedLocationAddress] = React.useState('')
     var [seletedLocationName, setseletedLocationName] = React.useState('')
     var [productList, setproductList] = React.useState([])
+    const [checked, setChecked] = React.useState([]);
     var [autocompleteLocation, setautocompleteLocation] = React.useState({
         lat: '',
         lng: ''
@@ -79,20 +89,22 @@ export default function AddCustomer(props) {
         contactPerson: '',
         contactNumber: '',
         googleAddress: '',
+        uid: ''
 
     });
 
-    const getAllProductList = async () => {
-        var response = await InventoryService.getAllInventoryForSelect()
-        var Dataset = response.data.data;
-        var checkbox = false;
-        for (var i = 0; i < Dataset.length; i++) {
-            Dataset[i].checkbox = checkbox
-        }
-        setproductList(Dataset)
+    const getAllProductList = () => {
+
+        commonService.getAllInventoryForSelect()
+            .then(res => {
+                var Dataset = res.data.data;
+                setproductList(Dataset)
+            })
     }
     useEffect(() => {
-        getAllProductList();
+        if (Object.keys(props.match.params).length == 0) {
+            getAllProductList();
+        }
         let { id } = props.match.params
         let params = {
             uid: id
@@ -113,21 +125,128 @@ export default function AddCustomer(props) {
                     lat: data.customerLocation.latitude,
                     lng: data.customerLocation.longitude
                 })
+                var selectedProductList = data.productList
+                commonService.getAllInventoryForSelect()
+                    .then(response => {
+                        var Dataset = response.data.data;
+                        setproductList(Dataset)
+                        var arr = [];
+                        for (var i = 0; i < Dataset.length; i++) {
+                            for (var j = 0; j < selectedProductList.length; j++) {
+                                if (Dataset[i].productId == selectedProductList[j].productId) {
+                                    arr.push(i)
+                                }
+                            }
+                        }
+                        setChecked(arr);
+                    })
             }).catch(err => console.log(err))
     }, [])
+
+
     const handleChange = (event) => {
         setValues({
             ...values,
             [event.target.name]: event.target.value,
         });
+        seterrorArray([])
+        setisFormOrderValid(true)
     };
 
     const AddUpdateUser = () => {
-        console.log("AddUpdateUser");
+        var errorArray = []
+        var isFormOrderValid = true
+        if (values.customerId == "") {
+            isFormOrderValid = false
+            errorArray.push("please Enter Customer Id.")
+
+        }
+        if (values.customerName == "") {
+            isFormOrderValid = false
+            errorArray.push("please Enter Customer Name.")
+        }
+        if (values.contactPerson == "") {
+            isFormOrderValid = false
+            errorArray.push("please Enter Contact Person.")
+        }
+
+        if (values.contactNumber == "") {
+            isFormOrderValid = false
+            errorArray.push("please Enter Customer Contact Number.")
+        }
+
+        if (seletedLocationName == "") {
+            isFormOrderValid = false
+            errorArray.push("set Location Marker with auto complete.")
+        }
+        seterrorArray(errorArray)
+        setisFormOrderValid(isFormOrderValid)
+
+        if (isFormOrderValid) {
+            let country = seletedLocationName.split(',')
+            country = country[country.length - 1]
+            var seletecProductList = [];
+            console.log("productList", productList);
+            console.log("checked", checked);
+            for (var i = 0; i < productList.length; i++) {
+                for (var j = 0; j < checked.length; j++) {
+                    if (i == j) {
+                        console.log("matched", productList[i])
+                        seletecProductList.push(productList[i])
+                    }
+                }
+            }
+            if (Object.keys(props.match.params).length > 0) {
+                var payload = {
+                    uid: values.uid,
+                    CustomerId: values.customerId,
+                    CustomerName: values.customerName,
+                    ContactPerson: values.contactPerson,
+                    ContactNumber: values.contactNumber,
+                    isActive: true,
+                    customerLocation: {
+                        area: seletedLocationName,
+                        latitude: autocompleteLocation.lat,
+                        longitude: autocompleteLocation.lng,
+                        country: country
+                    },
+                    productList: seletecProductList
+                }
+                console.log("payload", payload)
+                CustomerService.update(payload)
+                    .then(res => {
+                        let { code } = res.data
+                        if (code == 200) {
+                            props.history.push('/admin/Customer')
+                        }
+                    }).catch(err => console.log(err))
+            }
+            else {
+                var payload = {
+                    CustomerId: values.customerId,
+                    CustomerName: values.customerName,
+                    ContactPerson: values.contactPerson,
+                    ContactNumber: values.contactNumber,
+                    isActive: true,
+                    customerLocation: {
+                        area: seletedLocationName,
+                        latitude: autocompleteLocation.lat,
+                        longitude: autocompleteLocation.lng,
+                        country: country
+                    },
+                    productList: seletecProductList
+                }
+                CustomerService.addCustomer(payload)
+                    .then(res => {
+                        let { code } = res.data
+                        if (code == 200) {
+                            props.history.push('/admin/Customer')
+                        }
+                    }).catch(err => console.log(err))
+            }
+        }
     }
     const changeAddress = (name, cord) => {
-        console.log("name", name);
-        console.log("cord", cord);
         setseletedLocationName(name)
         setseletedLocationAddress(cord)
         setautocompleteLocation({
@@ -135,44 +254,20 @@ export default function AddCustomer(props) {
             lng: cord.lng
         })
     }
-    const prodcutCheck = (product) => {
-        for (var i = 0; i < productList.length; i++) {
-            if (productList[i].uid == product.productId) {
-                if (!productList[i].checkbox) {
-                    productList[i].checkbox = true
-                    setproductList(productList)
 
-                }
-                else {
-                    productList[i].checkbox = false
-                    setproductList(productList)
-                }
-            }
 
+    const handleToggle = value => {
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
         }
-        console.log("productList",productList);
-    }
+        setChecked(newChecked);
+    };
 
 
-
-    const editprodcutCheck = (product) => {
-        console.log("product", product);
-        for (var i = 0; i < productList.length; i++) {
-            if (productList[i].uid == product.productId) {
-                if (!productList[i].checkbox) {
-                    productList[i].checkbox = true
-                    setproductList(productList)
-                }
-                else {
-                    productList[i].checkbox = false
-                    setproductList(productList)
-                }
-            }
-
-        }
-        console.log('productList', productList);
-
-    }
 
     return (
         <GridContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -185,6 +280,22 @@ export default function AddCustomer(props) {
                         </p>
                     </CardHeader>
                     <CardBody>
+                        {
+                            !isFormOrderValid ?
+                                <Grid className={classes.errorAlert} >
+                                    {
+                                        errorArray.map((x, ind) => {
+                                            return (
+                                                <p key={ind} >
+                                                    {x}
+                                                </p>
+                                            )
+                                        })
+                                    }
+                                </Grid>
+                                :
+                                null
+                        }
                         <Grid container spacing={2}>
                             <Grid xs={12} sm={6} md={4} >
                                 <Grid xs={12} sm={11} md={11} >
@@ -251,25 +362,25 @@ export default function AddCustomer(props) {
 
                             <Grid xs={12} sm={6} md={4} >
                                 <Grid xs={12} sm={11} md={11} >
-                                    {/* <LocationSearchInput
+                                    <LocationSearchInput
                                         latlng={(seletedLocationAddress != '') ?
                                             seletedLocationAddress.lat + "/" + seletedLocationAddress.lng
                                             :
                                             undefined}
-                                        changeAddress={changeAddress} /> */}
+                                        changeAddress={changeAddress} />
                                 </Grid>
 
                                 <Grid xs={12} sm={11} md={12}
                                     style={{ height: 250, justifyContent: 'center', }}
                                 >
 
-                                    {/* <Map
+                                    <Map
                                         latlng={(seletedLocationAddress != '') ?
                                             seletedLocationAddress.lat + "/" + seletedLocationAddress.lng
                                             :
                                             undefined}
                                         autocompleteLocation={autocompleteLocation}
-                                    /> */}
+                                    />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -277,20 +388,17 @@ export default function AddCustomer(props) {
                         <Grid>
                             <h4 >Interst of Product's</h4>
                             <Grid container spacing={1}>
-                                {productList.map((val, ind) => {
-                                    console.log("val", val);
-                                    return (
-                                        <Grid xs={6} sm={4} md={3}>
-                                            {ind + 1 + ") " + val.productName + "\t"}
-                                            <Checkbox
-                                                value={val.uid}
-                                                color="default"
-                                                onChange={(e) => prodcutCheck(val)}
-                                                checked={val.checkbox}
-                                                className={[classes.checkbox, classes.checked]} />
-                                        </Grid>
-                                    )
-                                })}
+                                {productList.map((val, ind) => (
+                                    <Grid key={ind} xs={6} sm={4} md={3}>
+                                        {ind + 1 + ") " + val.productName + "\t"}
+                                        <Checkbox
+                                            value={val.uid}
+                                            color="default"
+                                            onClick={() => handleToggle(ind)}
+                                            checked={checked.indexOf(ind) !== -1}
+                                            className={[classes.checkbox, classes.checked]} />
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Grid>
                         <Grid container justify="flex-end" spacing={3}>

@@ -22,6 +22,7 @@ const useStyles = makeStyles(styles);
 export default function Tasks(props) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState([...props.checkedIndexes]);
+  console.log("checked",checked);
   const handleToggle = value => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -33,6 +34,7 @@ export default function Tasks(props) {
     setChecked(newChecked);
   };
   const { tasksIndexes, tasks, rtlActive } = props;
+  console.log("tasksIndexes",tasksIndexes);
   const tableCellClasses = classnames(classes.tableCell, {
     [classes.tableCellRTL]: rtlActive
   });

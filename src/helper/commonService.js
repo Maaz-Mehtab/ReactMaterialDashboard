@@ -10,3 +10,8 @@ export function getCustomersForSelect(params) {
         params: params
     })
 }
+export function getAllInventoryForSelect() {
+    return Axios.get(`${url}/getAllInventoryForSelect`, {
+        headers: util.httpHeaders(),
+    })
+}

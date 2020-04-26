@@ -23,6 +23,7 @@ export function update(payload) {
     })
 }
 export function addCustomer(payload) {
+    console.log("payload",payload);
     return Axios.post(`${url}/addCustomer`, payload, {
         headers: util.httpHeaders(),
     })
