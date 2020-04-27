@@ -23,16 +23,13 @@ export const userType = [
     },
     {
         id: 3,
-        name: "Sales"
+        name: "Sales Person"
     },
     {
         id: 4,
         name: "Hospital"
     },
-    {
-        id: 5,
-        name: "Client"
-    },
+
 ]
 
 export const discountType = [
@@ -48,7 +45,7 @@ export const discountType = [
 ]
 
 // export const baseURL = "https://us-central1-testproject-98a49.cloudfunctions.net/api"
-export const baseURL = "http://localhost:5001/testproject-98a49/us-central1/api"
+export const baseURL = "http://localhost:5000/testproject-98a49/us-central1/api"
 
 export const emailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 
@@ -73,7 +70,9 @@ export const usersExist = (route, props) => {
 
 export const colors = {
     errorBackground: "#fdecea",
-    errorText: "#611a15"
+    errorText: "#611a15",
+    successBackground: "#d4edda",
+    successText: "#155724"
 }
 
 export const httpHeaders = () => {
