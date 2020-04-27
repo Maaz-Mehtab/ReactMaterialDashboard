@@ -31,8 +31,6 @@ export default class LocationSearchInput extends React.Component {
             .then(results => getLatLng(results[0]))
             .then(latLng => {
                 Storage.selectedLocation = latLng
-                console.log("address",address);
-                console.log("latLng",latLng);
                 this.props.changeAddress(address, latLng)
                 this.setState({
                     autocompleteLocation: {

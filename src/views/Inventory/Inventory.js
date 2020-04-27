@@ -92,11 +92,11 @@ class Inventory extends React.Component {
                         >
                             <Edit
                                 color="action"
-                                onClick={this.editInventory.bind(this, row.uid)}
+                                onClick={this.editInventory.bind(this, row.productId)}
                             />
                             <Delete
                                 color="action"
-                                // onClick={this.editUser.bind(this, row.uid)}
+                                // onClick={this.editUser.bind(this, row.productId)}
                             />
                         </GridItem>
                     )
@@ -108,8 +108,8 @@ class Inventory extends React.Component {
             columns
         })
     }
-    editInventory = (uid) => {
-        this.props.history.push(`/admin/updateInventory/${uid}`)
+    editInventory = (productId) => {
+        this.props.history.push(`/admin/updateInventory/${productId}`)
     }
     pageChange = (e) => {
         try {

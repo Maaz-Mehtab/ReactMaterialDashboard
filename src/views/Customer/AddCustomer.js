@@ -186,17 +186,10 @@ export default function AddCustomer(props) {
             let country = seletedLocationName.split(',')
             country = country[country.length - 1]
             var seletecProductList = [];
-            console.log("productList", productList);
-            console.log("checked", checked);
-            for (var i = 0; i < productList.length; i++) {
-                for (var j = 0; j < checked.length; j++) {
-                    if (i == j) {
-                        console.log("matched", productList[i])
-                        seletecProductList.push(productList[i])
-                    }
-                }
+            for (var i = 0; i < checked.length; i++) {
+                seletecProductList.push(productList[checked[i]])
             }
-            if (Object.keys(props.match.params).length > 0) {
+             if (Object.keys(props.match.params).length > 0) {
                 var payload = {
                     uid: values.uid,
                     CustomerId: values.customerId,
@@ -212,7 +205,6 @@ export default function AddCustomer(props) {
                     },
                     productList: seletecProductList
                 }
-                console.log("payload", payload)
                 CustomerService.update(payload)
                     .then(res => {
                         let { code } = res.data

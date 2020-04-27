@@ -18,7 +18,6 @@ export class MapContainer extends Component {
         }
     }
     componentWillReceiveProps(nextprops) {
-        console.log("nextprops",nextprops);
         if (nextprops.autocompleteLocation.lat != null) {
             this.setState({
                 autocompleteLocation: nextprops.autocompleteLocation
@@ -100,5 +99,5 @@ export class MapContainer extends Component {
         );
     }
 } export default GoogleApiWrapper({
-    apiKey: 'AIzaSyD_NGgkSC6tIfVA9B0IeUea-b6emd9iAtw'
+    apiKey: 'AIzaSyCEmajTFkOg6Q-vCo4A73VdWSk1z4msiNo'
 })(MapContainer);

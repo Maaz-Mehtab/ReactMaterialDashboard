@@ -56,12 +56,12 @@ export default function AddInventory(props) {
         productRetailPrice: '',
         productInternalPrice: '',
         quantity: '',
-        uid: ''
+        productId: ''
     });
     useEffect(() => {
         let { id } = props.match.params
         let params = {
-            uid: id
+            productId: id
         }
         InventoryService.getSpecificInventory(params)
             .then(res => {
@@ -72,7 +72,7 @@ export default function AddInventory(props) {
                     productRetailPrice: data.productRetailPrice,
                     productInternalPrice: data.productInternalPrice,
                     quantity: data.productQty,
-                    uid: id
+                    productId: id
                 });
             }).catch(err => console.log(err))
     }, [])
@@ -92,7 +92,7 @@ export default function AddInventory(props) {
                 productQty: values.quantity,
                 productInternalPrice: values.productInternalPrice,
                 productValue: values.quantity * values.productRetailPrice,
-                uid: values.uid
+                productId: values.productId
             }
             InventoryService.update(payload)
                 .then(res => {
