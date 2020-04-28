@@ -125,7 +125,7 @@ export default function SignIn(props) {
           
           if (code == 200) {
             util.localStorage_SaveKey("token", token)
-            util.localStorage_SaveKey("user", data)
+             util.localStorage_SaveKey("user", JSON.stringify(data))
             props.history.replace("/admin/dashboard")
           } else if (code == 422) {
             setValues({

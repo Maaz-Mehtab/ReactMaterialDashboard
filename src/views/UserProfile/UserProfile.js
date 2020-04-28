@@ -87,19 +87,32 @@ export default function UserProfile() {
   const getUserDetails = async ()=> {
     let userObj = await util.localStorage_GetKey('user')
     userObj = JSON.parse(userObj)
-    console.log("userObj",userObj);
-    // setValues({
-    //   ...values,
-    //   userName: userObj.userName,
-    //   email: userObj.email,
-    //   country: userObj.country,
-    //   phone: userObj.phone,
-    // });
+    setValues({
+      ...values,
+      userName: userObj.name,
+      email: userObj.email,
+      country: userObj.country,
+      phone: userObj.phone,
+    });
 
   }
   return (
     <div>
       <GridContainer>
+      <GridItem xs={12} sm={12} md={4}>
+          <Card profile>
+            <CardAvatar profile>
+              <a href="#pablo" onClick={e => e.preventDefault()}>
+                <img src={avatar} alt="..." />
+              </a>
+            </CardAvatar>
+            <CardBody profile>
+              <Button color="primary" round>
+                Change Profile
+              </Button>
+            </CardBody>
+          </Card>
+        </GridItem>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
@@ -120,7 +133,7 @@ export default function UserProfile() {
                 <GridItem xs={12} sm={12} md={6}>
                   <CssTextField
                     value={values.email}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     label="Email"
                     name="email"
                     type="name"
@@ -138,7 +151,7 @@ export default function UserProfile() {
                     onChange={handleChange}
                     label="Phone"
                     name="phone"
-                    type="name"
+                    type="number"
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
@@ -160,20 +173,7 @@ export default function UserProfile() {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card profile>
-            <CardAvatar profile>
-              <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
-              </a>
-            </CardAvatar>
-            <CardBody profile>
-              <Button color="primary" round>
-                Change Profile
-              </Button>
-            </CardBody>
-          </Card>
-        </GridItem>
+      
       </GridContainer>
     </div>
   );
