@@ -84,7 +84,7 @@ export default function UserProfile() {
   useEffect(() => {
     getUserDetails()
   }, [])
-  const getUserDetails = async ()=> {
+  const getUserDetails = async () => {
     let userObj = await util.localStorage_GetKey('user')
     userObj = JSON.parse(userObj)
     setValues({
@@ -96,10 +96,29 @@ export default function UserProfile() {
     });
 
   }
+
+  function onFileChange(event) {
+    let file = event.target.files[0];
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        debugger
+        resolve(event.target.result);
+      };
+
+      reader.onerror = (err) => {
+        reject(err);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
   return (
     <div>
       <GridContainer>
-      <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={4}>
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
@@ -110,6 +129,7 @@ export default function UserProfile() {
               <Button color="primary" round>
                 Change Profile
               </Button>
+              <input type="file" onChange={onFileChange.bind(this)}></input>
             </CardBody>
           </Card>
         </GridItem>
@@ -173,7 +193,7 @@ export default function UserProfile() {
             </CardFooter>
           </Card>
         </GridItem>
-      
+
       </GridContainer>
     </div>
   );
