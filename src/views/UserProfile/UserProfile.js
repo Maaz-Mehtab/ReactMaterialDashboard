@@ -11,24 +11,9 @@ import CardFooter from "components/Card/CardFooter.js";
 import CssTextField from 'components/CssTextField/CssTextField.js';
 import avatar from "assets/img/faces/marc.jpg";
 import * as util from "../../helper/Utilities";
-const styles = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0"
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  }
-};
+import * as userService from '../Users/UserService';
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,26 +49,39 @@ const useStyles = makeStyles((theme) => ({
   input1: {
     height: 10,
 
+  },
+  errorAlert: {
+    backgroundColor: util.colors.errorBackground,
+    color: util.colors.errorText,
+    padding: 20
   }
 }));
 
-export default function UserProfile() {
+export default function UserProfile(props) {
   const classes = useStyles();
+  var [isFormOrderValid, setisFormOrderValid] = React.useState(true)
+  var [errorArray, seterrorArray] = React.useState([])
   const [values, setValues] = React.useState({
     userName: '',
     email: '',
     phone: '',
     country: '',
+    uid: '',
   });
   const handleChange = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
     });
+    seterrorArray([])
+    setisFormOrderValid(true)
   };
+
   useEffect(() => {
     getUserDetails()
   }, [])
+
+
   const getUserDetails = async () => {
     let userObj = await util.localStorage_GetKey('user')
     userObj = JSON.parse(userObj)
@@ -93,28 +91,51 @@ export default function UserProfile() {
       email: userObj.email,
       country: userObj.country,
       phone: userObj.phone,
+      uid: userObj.uid,
+      userType: userObj.userType
     });
 
   }
 
-  function onFileChange(event) {
-    let file = event.target.files[0];
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+  const updateProfile = async () => {
+    var errorArray = []
+    var isFormOrderValid = true
+    if (values.userName == "") {
+      isFormOrderValid = false
+      errorArray.push("Please Enter User Name")
+    }
+    if (values.country == "") {
+      isFormOrderValid = false
+      errorArray.push("Please Enter Country")
+    }
+    if (values.phone == "") {
+      isFormOrderValid = false
+      errorArray.push("Please Enter Phone No")
+    }
+    seterrorArray(errorArray)
+    setisFormOrderValid(isFormOrderValid)
+    if (isFormOrderValid) {
+      let payload = {
+        name: values.userName,
+        phone: values.phone,
+        email: values.email,
+        userType: values.userType,
+        country: values.country,
+        uid: values.uid
+      }
+      userService.updateProfile(payload)
+        .then((respone) => {
+          let { data, code } = respone.data
+          if (code == 200) {
+            util.localStorage_SaveKey('user', JSON.stringify(payload))
+            props.history.push('/admin')
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+    }
 
-      reader.onload = (event) => {
-        debugger
-        resolve(event.target.result);
-      };
-
-      reader.onerror = (err) => {
-        reject(err);
-      };
-
-      reader.readAsDataURL(file);
-    });
   }
-
   return (
     <div>
       <GridContainer>
@@ -140,6 +161,26 @@ export default function UserProfile() {
               <p className={classes.cardCategoryWhite}>Complete your profile</p>
             </CardHeader>
             <CardBody>
+              {
+                !isFormOrderValid ?
+                  <GridItem style={{
+                    backgroundColor: util.colors.errorBackground,
+                    color: util.colors.errorText,
+                    padding: 20
+                  }} >
+                    {
+                      errorArray.map((x, ind) => {
+                        return (
+                          <p key={ind} >
+                            {x}
+                          </p>
+                        )
+                      })
+                    }
+                  </GridItem>
+                  :
+                  null
+              }
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                   <CssTextField
@@ -189,7 +230,9 @@ export default function UserProfile() {
 
             </CardBody>
             <CardFooter>
-              <Button color="primary">Update Profile</Button>
+              <Button
+                onClick={updateProfile}
+                color="primary">Update Profile</Button>
             </CardFooter>
           </Card>
         </GridItem>
