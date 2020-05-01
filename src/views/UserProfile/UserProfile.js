@@ -96,6 +96,24 @@ export default function UserProfile(props) {
     });
 
   }
+  const onFileChange = (event) => {
+    let file = event.target.files[0]
+
+    var arrayBufferView = new Uint8Array(file);
+    var blob = new Blob([arrayBufferView], { type: "image/jpeg" });
+    // let payload = {
+    //   profileImage: blob
+    // }
+    // userService.updateProfileImage(payload)
+    let reader = new FileReader();
+    let bu = reader.readAsArrayBuffer(blob)
+    debugger
+    // reader.readAsDataURL(file);
+    // reader.onloadend = () => {
+    //   let result = reader.result
+    //   debugger
+    // }
+  }
 
   const updateProfile = async () => {
     var errorArray = []
@@ -150,7 +168,7 @@ export default function UserProfile(props) {
               <Button color="primary" round>
                 Change Profile
               </Button>
-              <input type="file" onChange={onFileChange.bind(this)}></input>
+              {/* <input type="file" onChange={onFileChange.bind(this)}></input> */}
             </CardBody>
           </Card>
         </GridItem>

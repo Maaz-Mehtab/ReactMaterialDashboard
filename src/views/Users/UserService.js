@@ -28,3 +28,9 @@ export function updateProfile(payload) {
         headers: util.httpHeaders(),
     })
 }
+
+export function updateProfileImage(payload) {
+    return Axios.post(`${url}/updateProfileImage`, payload, {
+        headers: util.httpHeaders(),
+    })
+}
